@@ -13,7 +13,7 @@
 
 ![dx_1](https://user-images.githubusercontent.com/95027704/143552080-9dff3bbc-dee6-41df-b6ed-8f3d87694135.png)
 
-다이스가 굴림 영역을 클릭하면, 아래와 같이 굴러간 다이스들이 표시됩니다. 크리티컬 다이스는 녹색으로 뜹니다.
+다이스의 굴림 영역을 클릭하면, 아래와 같이 굴러간 다이스들이 표시됩니다. 크리티컬 다이스는 녹색으로 뜹니다.
 
 ![dx_2](https://user-images.githubusercontent.com/95027704/143552500-5e2841e7-c5fa-4fc1-8468-e856ad437443.png)
 
