@@ -16,5 +16,5 @@
 
 ![dx_2](https://user-images.githubusercontent.com/95027704/143552500-5e2841e7-c5fa-4fc1-8468-e856ad437443.png)
 
-# 링크
+# 매니페스트 링크(모듈 설치)
 - https://github.com/meringue912/fvtt-dx3rd-dice/releases/latest/download/module.json
