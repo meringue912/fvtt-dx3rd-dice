@@ -1,6 +1,6 @@
 Hooks.on("chatMessage", function (chatlog, message, chatdata) {
   // dx 커맨드 정규표현식(11dx6+2, 11dx@6+2)
-  const pattern = /^\d+dx@?(\d+)?([+-]\d+)*$/;
+  const pattern = /^\d+(dx|DX)@?(\d+)?([+-]\d+)*$/;
   // dx 커맨드 분리
   const basic_express = /^\d+dx+(\d)?/; // 11dx6 (11dx@6)
   const bonus_express = /([+-]\d+)*$/; // +2
@@ -10,12 +10,10 @@ Hooks.on("chatMessage", function (chatlog, message, chatdata) {
   let kept_explode_bonus = '';
   let roll = message;
 
-  let script_list = [];
 
   if (pattern.test(roll)) {
-    if(roll.includes("@")){
-      roll = roll.replace("@","");
-    }
+    roll = roll.replace("@","");
+    roll = roll.replace("DX","dx");
 
     [dices, kept_explode_bonus] = roll.split`dx`.map(parseIntIfPossible);
     kept_explode_bonus = String(kept_explode_bonus);
@@ -25,34 +23,37 @@ Hooks.on("chatMessage", function (chatlog, message, chatdata) {
     
     
 
-    if(String(kept_explode_bonus).length == 0){
-      console.log("kept_explode_bonus is null")
-    }
-    else if(isNaN(kept_explode_bonus)){
-      let critical_temp = kept_explode_bonus.replace(bonus_express,"");
-      critical = parseInt(critical_temp);
-
-
-      bonus_formula= roll.replace(basic_express,"");
-
-      let r_temp = new Roll(bonus_formula);
-      bonus_result = r_temp.evaluate().total
-
-
-    }else{
-      if(kept_explode_bonus[0] === "+" | kept_explode_bonus[0] === "-" ){
-        
-        bonus_formula= roll.replace(basic_express,"");
-        let r_temp = new Roll(bonus_formula);
-        bonus_result = r_temp.evaluate().total
-        
-      }
-      else{
-        critical = kept_explode_bonus;
-      }
+    if(String(kept_explode_bonus).length != 0){
       
+      if(isNaN(kept_explode_bonus)){
+        let critical_temp = kept_explode_bonus.replace(bonus_express,"");
+        critical = parseInt(critical_temp);
+
+
+        bonus_formula= roll.replace(basic_express,"");
+
+        let r_temp = new Roll(bonus_formula);
+        bonus_result = r_temp.evaluate({minimize: false, maximize: false, async: false}).total
+
+
+      }else{
+        if(kept_explode_bonus[0] === "+" | kept_explode_bonus[0] === "-" ){
+          
+          bonus_formula= roll.replace(basic_express,"");
+          let r_temp = new Roll(bonus_formula);
+          bonus_result = r_temp.evaluate({minimize: false, maximize: false, async: false}).total
+          
+        }
+        else{
+          critical = kept_explode_bonus;
+        }
+        
+      }
     }
 
+    if(critical<2){
+      return true;
+    }
 
     let dice_result = 0;
     let rolling_list = [];
@@ -64,7 +65,8 @@ Hooks.on("chatMessage", function (chatlog, message, chatdata) {
       let max = 0;
       for(i=0;i<dices;i++){
         let r = new Roll("1d10");
-        let result = r.evaluate().total;
+        // console.warn = console.error = () => {}; // 에러숨기기
+        let result = r.evaluate({minimize: false, maximize: false, async: false}).total;
         roll_temp.push(result)
         if(result >= critical){
           temp++;
